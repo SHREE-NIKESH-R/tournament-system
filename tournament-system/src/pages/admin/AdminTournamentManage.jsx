@@ -1,6 +1,6 @@
 import { useParams, Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { ArrowLeft, CheckCircle2, Clock, Trophy, Crown } from "lucide-react";
+import { ArrowLeft, CheckCircle2, Clock, Trophy } from "lucide-react";
 import { useTournament } from '@/hooks/useTournament'
 import MatchResultForm from '@/components/admin/MatchResultForm'
 import Leaderboard from '@/components/public/Leaderboard'
@@ -14,7 +14,7 @@ import { getStatusConfig, getTypeConfig, formatDate } from '@/utils/tournament'
 function MatchAdminRow({ match, tournament, totalPlayers, onComplete, isBlocked }) {
   const p1Wins = match.completed && match.winner_id === match.player1_id
   const p2Wins = match.completed && match.winner_id === match.player2_id
-  const isDraw = match.completed && match.is_draw
+  const isDraw = match.completed && match.is_draw;
 
   return (
     <div
@@ -29,19 +29,16 @@ function MatchAdminRow({ match, tournament, totalPlayers, onComplete, isBlocked 
         }
       `}
     >
-      {/* Top: player vs player */}
-      <div className="grid grid-cols-[1fr_auto_1fr] gap-3 items-stretch">
-        {/* Player 1 */}
+      {/* ── Desktop: side-by-side ── / ── Mobile: stacked ── */}
+      <div className="hidden sm:grid grid-cols-[1fr_auto_1fr] items-stretch">
+        {/* P1 desktop */}
         <div
-          className={`
-            px-4 py-3 flex items-center gap-2 transition-colors
-            ${p1Wins ? "bg-neon-cyan/10" : ""}
-          `}
+          className={`px-4 py-3 flex items-center gap-2 ${p1Wins ? "bg-neon-cyan/10" : ""}`}
         >
           <div className="flex-1 min-w-0">
             <span
-              className={`block text-sm font-semibold truncate transition-colors
-                ${p1Wins ? "text-neon-cyan" : isDraw ? "text-white/60" : "text-white/85"}`}
+              className={`block text-sm font-semibold truncate
+              ${p1Wins ? "text-neon-cyan" : isDraw ? "text-white/60" : "text-white/85"}`}
             >
               {match.player1?.name || "TBD"}
             </span>
@@ -56,39 +53,34 @@ function MatchAdminRow({ match, tournament, totalPlayers, onComplete, isBlocked 
           )}
         </div>
 
-        {/* VS / result center */}
-        <div className="flex items-center justify-center px-2">
+        {/* VS desktop */}
+        <div className="flex items-center justify-center px-3 border-x border-white/[0.04]">
           {match.completed ? (
-            <div className="flex flex-col items-center gap-0.5">
-              {isDraw ? (
-                <span className="text-[9px] font-[Orbitron] uppercase tracking-widest text-white/40 bg-white/5 px-2 py-1 rounded-full border border-white/10">
-                  Draw
-                </span>
-              ) : (
-                <CheckCircle2 className="w-4 h-4 text-green-400" />
-              )}
-            </div>
+            isDraw ? (
+              <span className="text-[9px] font-[Orbitron] text-white/40 bg-white/5 px-2 py-1 rounded-full border border-white/10">
+                Draw
+              </span>
+            ) : (
+              <CheckCircle2 className="w-4 h-4 text-green-400" />
+            )
           ) : (
-            <span className="text-[10px] font-[Orbitron] text-white/20 tracking-widest">
+            <span className="text-[10px] font-[Orbitron] text-white/20">
               VS
             </span>
           )}
         </div>
 
-        {/* Player 2 */}
+        {/* P2 desktop */}
         <div
-          className={`
-            px-4 py-3 flex items-center gap-2 justify-end transition-colors
-            ${p2Wins ? "bg-neon-cyan/10" : ""}
-          `}
+          className={`px-4 py-3 flex items-center gap-2 justify-end ${p2Wins ? "bg-neon-cyan/10" : ""}`}
         >
           {p2Wins && (
             <Trophy className="w-4 h-4 text-neon-cyan shrink-0 drop-shadow-[0_0_8px_rgba(6,214,245,0.7)]" />
           )}
           <div className="flex-1 min-w-0 text-right">
             <span
-              className={`block text-sm font-semibold truncate transition-colors
-                ${p2Wins ? "text-neon-cyan" : isDraw ? "text-white/60" : "text-white/85"}`}
+              className={`block text-sm font-semibold truncate
+              ${p2Wins ? "text-neon-cyan" : isDraw ? "text-white/60" : "text-white/85"}`}
             >
               {match.player2?.name || "TBD"}
             </span>
@@ -101,9 +93,57 @@ function MatchAdminRow({ match, tournament, totalPlayers, onComplete, isBlocked 
         </div>
       </div>
 
-      {/* Bottom: result form or locked state */}
+      {/* ── Mobile: stacked layout ── */}
+      <div className="sm:hidden">
+        {/* P1 mobile */}
+        <div
+          className={`px-3 py-2.5 flex items-center gap-2 ${p1Wins ? "bg-neon-cyan/10 border-l-2 border-neon-cyan" : "border-l-2 border-transparent"}`}
+        >
+          <span
+            className={`flex-1 text-sm font-semibold truncate
+            ${p1Wins ? "text-neon-cyan" : isDraw ? "text-white/55" : "text-white/85"}`}
+          >
+            {match.player1?.name || "TBD"}
+          </span>
+          {p1Wins && <Trophy className="w-3.5 h-3.5 text-neon-cyan shrink-0" />}
+          {p1Wins && (
+            <span className="text-[9px] font-[Orbitron] text-neon-cyan/70 uppercase tracking-wider">
+              WIN
+            </span>
+          )}
+        </div>
+
+        {/* Divider with VS */}
+        <div className="flex items-center gap-2 px-3 py-1">
+          <div className="flex-1 h-px bg-white/[0.05]" />
+          <span className="text-[9px] font-[Orbitron] text-white/20 uppercase tracking-widest">
+            {match.completed ? (isDraw ? "Draw" : "vs") : "vs"}
+          </span>
+          <div className="flex-1 h-px bg-white/[0.05]" />
+        </div>
+
+        {/* P2 mobile */}
+        <div
+          className={`px-3 py-2.5 flex items-center gap-2 ${p2Wins ? "bg-neon-cyan/10 border-l-2 border-neon-cyan" : "border-l-2 border-transparent"}`}
+        >
+          <span
+            className={`flex-1 text-sm font-semibold truncate
+            ${p2Wins ? "text-neon-cyan" : isDraw ? "text-white/55" : "text-white/85"}`}
+          >
+            {match.player2?.name || "TBD"}
+          </span>
+          {p2Wins && <Trophy className="w-3.5 h-3.5 text-neon-cyan shrink-0" />}
+          {p2Wins && (
+            <span className="text-[9px] font-[Orbitron] text-neon-cyan/70 uppercase tracking-wider">
+              WIN
+            </span>
+          )}
+        </div>
+      </div>
+
+      {/* Result form / locked footer */}
       {tournament.status !== "finished" && (
-        <div className="px-4 pb-3 border-t border-white/[0.04]">
+        <div className="px-3 sm:px-4 pb-3 border-t border-white/[0.04]">
           <MatchResultForm
             match={match}
             tournament={tournament}
@@ -114,9 +154,8 @@ function MatchAdminRow({ match, tournament, totalPlayers, onComplete, isBlocked 
         </div>
       )}
 
-      {/* Finished tournament — just show result */}
       {tournament.status === "finished" && match.completed && (
-        <div className="px-4 py-2 border-t border-white/[0.04] flex items-center gap-2">
+        <div className="px-3 sm:px-4 py-2 border-t border-white/[0.04] flex items-center gap-2">
           <CheckCircle2 className="w-3.5 h-3.5 text-green-400/60 shrink-0" />
           <span className="text-xs text-white/30 font-[Orbitron] tracking-wider">
             {isDraw ? "Draw" : `${match.winner?.name} wins`}
@@ -151,7 +190,6 @@ export default function AdminTournamentManage() {
   const statusConfig = getStatusConfig(tournament.status)
   const typeConfig = getTypeConfig(tournament.type);
 
-  // Group matches by round
   const roundMap = {};
   matches.forEach((m) => {
     if (!roundMap[m.round_number]) roundMap[m.round_number] = [];
@@ -161,12 +199,9 @@ export default function AdminTournamentManage() {
     .map(Number)
     .sort((a, b) => a - b);
 
-  // For knockout: only the first round with incomplete matches is "active"
   const firstIncompleteRound = roundNumbers.find((r) =>
     roundMap[r].some((m) => !m.completed),
   );
-
-  // Total knockout players = first round * 2
   const totalKnockoutPlayers = (roundMap[1]?.length ?? 0) * 2 || 2;
 
   return (
@@ -174,14 +209,14 @@ export default function AdminTournamentManage() {
       {/* Back */}
       <Link
         to="/admin"
-        className="inline-flex items-center gap-1.5 text-white/40 hover:text-white/70 text-sm mb-6 transition-colors"
+        className="inline-flex items-center gap-1.5 text-white/40 hover:text-white/70 text-sm mb-5 transition-colors"
       >
         <ArrowLeft className="w-4 h-4" />
         Dashboard
       </Link>
 
       {/* Header */}
-      <div className="mb-8">
+      <div className="mb-6">
         <div className="flex flex-wrap items-center gap-2 mb-2">
           <Badge className={statusConfig.className}>{statusConfig.label}</Badge>
           <Badge className={typeConfig.className}>{typeConfig.label}</Badge>
@@ -189,7 +224,7 @@ export default function AdminTournamentManage() {
             {formatDate(tournament.created_at)}
           </span>
         </div>
-        <h1 className="text-xl md:text-2xl font-[Orbitron] font-black text-white mb-1">
+        <h1 className="text-lg sm:text-2xl font-[Orbitron] font-black text-white mb-1 leading-tight">
           {tournament.name}
         </h1>
         {tournament.type === "league" && (
@@ -204,8 +239,8 @@ export default function AdminTournamentManage() {
                   {tournament.draw_points}pts
                 </span>
               </>
-            )}{" "}
-            · Loss:{" "}
+            )}
+            {" · "}Loss:{" "}
             <span className="text-white/30">{tournament.loss_points}pts</span>
           </p>
         )}
@@ -216,78 +251,84 @@ export default function AdminTournamentManage() {
         <motion.div
           initial={{ opacity: 0, y: -8 }}
           animate={{ opacity: 1, y: 0 }}
-          className="mb-6 px-4 py-3 rounded-xl bg-green-500/8 border border-green-500/20 flex items-center gap-3"
+          className="mb-5 px-4 py-3 rounded-xl bg-green-500/8 border border-green-500/20 flex items-center gap-3"
         >
           <CheckCircle2 className="w-5 h-5 text-green-400 shrink-0" />
-          <p className="text-sm text-green-300 font-[Rajdhani]">
+          <p className="text-sm text-green-300">
             Tournament concluded — all results are final.
           </p>
         </motion.div>
       )}
 
-      {/* ── LEAGUE layout ── */}
+      {/* ── LEAGUE ── */}
       {tournament.type === "league" ? (
-        <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
-          <div className="lg:col-span-2">
+        <div className="space-y-6">
+          {/* On mobile: leaderboard on top, then rounds. On desktop: side by side */}
+          <div className="lg:hidden">
             <Leaderboard standings={standings} loading={loading} />
           </div>
 
-          <div className="lg:col-span-3 space-y-5">
-            {roundNumbers.map((roundNum) => {
-              const roundMatches = roundMap[roundNum];
-              const roundName =
-                roundMatches[0]?.round_name || `Round ${roundNum}`;
-              const done = roundMatches.filter((m) => m.completed).length;
-              const allDone = done === roundMatches.length;
+          <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
+            <div className="hidden lg:block lg:col-span-2">
+              <Leaderboard standings={standings} loading={loading} />
+            </div>
 
-              return (
-                <Card key={roundNum}>
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      {allDone ? (
-                        <CheckCircle2 className="w-4 h-4 text-green-400" />
-                      ) : (
-                        <Clock className="w-4 h-4 text-neon-purple animate-pulse" />
-                      )}
-                      {roundName}
-                    </CardTitle>
-                    <span className="text-xs text-white/30 tabular-nums">
-                      {done}/{roundMatches.length}
-                    </span>
-                  </CardHeader>
+            <div className="lg:col-span-3 space-y-5">
+              {roundNumbers.map((roundNum) => {
+                const roundMatches = roundMap[roundNum];
+                const roundName =
+                  roundMatches[0]?.round_name || `Round ${roundNum}`;
+                const done = roundMatches.filter((m) => m.completed).length;
+                const allDone = done === roundMatches.length;
 
-                  {/* Progress bar */}
-                  <div className="h-1 bg-white/5 rounded-full mb-4 overflow-hidden">
-                    <motion.div
-                      className="h-full bg-gradient-to-r from-neon-purple to-neon-cyan rounded-full"
-                      initial={{ width: 0 }}
-                      animate={{
-                        width: `${(done / roundMatches.length) * 100}%`,
-                      }}
-                      transition={{ duration: 0.5 }}
-                    />
-                  </div>
+                return (
+                  <Card key={roundNum}>
+                    <CardHeader>
+                      <CardTitle className="flex items-center gap-2 text-xs sm:text-sm">
+                        {allDone ? (
+                          <CheckCircle2 className="w-4 h-4 text-green-400 shrink-0" />
+                        ) : (
+                          <Clock className="w-4 h-4 text-neon-purple animate-pulse shrink-0" />
+                        )}
+                        {roundName}
+                      </CardTitle>
+                      <span className="text-xs text-white/30 tabular-nums shrink-0">
+                        {done}/{roundMatches.length}
+                      </span>
+                    </CardHeader>
 
-                  <div className="space-y-3">
-                    {roundMatches.map((match) => (
-                      <MatchAdminRow
-                        key={match.id}
-                        match={match}
-                        tournament={tournament}
-                        totalPlayers={players.length}
-                        onComplete={refetch}
-                        isBlocked={false}
+                    <div className="h-1 bg-white/5 rounded-full mb-4 overflow-hidden">
+                      <motion.div
+                        className="h-full bg-gradient-to-r from-neon-purple to-neon-cyan rounded-full"
+                        initial={{ width: 0 }}
+                        animate={{
+                          width: `${(done / roundMatches.length) * 100}%`,
+                        }}
+                        transition={{ duration: 0.5 }}
                       />
-                    ))}
-                  </div>
-                </Card>
-              );
-            })}
+                    </div>
+
+                    <div className="space-y-3">
+                      {roundMatches.map((match) => (
+                        <MatchAdminRow
+                          key={match.id}
+                          match={match}
+                          tournament={tournament}
+                          totalPlayers={players.length}
+                          onComplete={refetch}
+                          isBlocked={false}
+                        />
+                      ))}
+                    </div>
+                  </Card>
+                );
+              })}
+            </div>
           </div>
         </div>
       ) : (
-        /* ── KNOCKOUT layout ── */
-        <div className="space-y-6">
+        /* ── KNOCKOUT ── */
+        <div className="space-y-5">
           <BracketView matches={matches} loading={loading} />
 
           {roundNumbers.map((roundNum) => {
@@ -302,17 +343,17 @@ export default function AdminTournamentManage() {
             return (
               <Card key={roundNum}>
                 <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
+                  <CardTitle className="flex items-center gap-2 text-xs sm:text-sm">
                     {allDone ? (
-                      <CheckCircle2 className="w-4 h-4 text-green-400" />
+                      <CheckCircle2 className="w-4 h-4 text-green-400 shrink-0" />
                     ) : isActive ? (
-                      <Clock className="w-4 h-4 text-neon-purple animate-pulse" />
+                      <Clock className="w-4 h-4 text-neon-purple animate-pulse shrink-0" />
                     ) : (
-                      <Clock className="w-4 h-4 text-white/15" />
+                      <Clock className="w-4 h-4 text-white/15 shrink-0" />
                     )}
                     {roundName}
                   </CardTitle>
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 shrink-0">
                     {isActive && !allDone && (
                       <Badge className="bg-neon-purple/20 text-neon-purple border border-neon-purple/30 text-[9px]">
                         Active
@@ -324,7 +365,6 @@ export default function AdminTournamentManage() {
                   </div>
                 </CardHeader>
 
-                {/* Progress bar */}
                 <div className="h-1 bg-white/5 rounded-full mb-4 overflow-hidden">
                   <motion.div
                     className="h-full bg-gradient-to-r from-neon-cyan to-neon-purple rounded-full"
