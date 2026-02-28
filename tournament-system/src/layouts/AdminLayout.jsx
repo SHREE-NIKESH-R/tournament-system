@@ -26,7 +26,7 @@ function SidebarContent({ location, onNavClick, handleSignOut }) {
           <Trophy className="w-3.5 h-3.5 text-neon-purple" />
         </div>
         <span className="font-[Orbitron] font-bold text-xs tracking-widest uppercase text-white/90">
-          TourneyOS
+          NammaLeague
         </span>
       </div>
 
@@ -125,7 +125,7 @@ export default function AdminLayout() {
             <Trophy className="w-3.5 h-3.5 text-neon-purple" />
           </div>
           <span className="font-[Orbitron] font-bold text-xs tracking-widest uppercase text-white/90">
-            TourneyOS
+            NammaLeague
           </span>
         </div>
         <button
