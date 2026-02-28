@@ -1,5 +1,5 @@
 -- ============================================================
--- TourneyOS — Supabase SQL Schema
+-- NammaLeague — Supabase SQL Schema
 -- Run this in your Supabase SQL Editor
 -- ============================================================
 

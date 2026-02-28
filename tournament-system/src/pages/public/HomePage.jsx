@@ -50,8 +50,7 @@ export default function HomePage() {
           transition={{ delay: 0.1 }}
           className="text-4xl md:text-5xl font-[Orbitron] font-black text-white mb-4 leading-tight"
         >
-          <span className="neon-text-purple">TOURNEY</span>
-          <span className="text-white/90">OS</span>
+          <span className="neon-text-purple">NammaLeague</span>
         </motion.h1>
 
         <motion.p

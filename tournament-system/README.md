@@ -1,4 +1,4 @@
-# 🏆 TourneyOS — Tournament Management System
+# 🏆 NammaLeague — Tournament Management System
 
 A full-stack tournament management system for Chess and Clash Royale with League (Round Robin) and Knockout (Single Elimination) formats.
 

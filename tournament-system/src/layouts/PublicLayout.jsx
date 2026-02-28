@@ -18,7 +18,7 @@ export default function PublicLayout() {
               <Trophy className="w-4 h-4 text-neon-purple" />
             </div>
             <span className="font-[Orbitron] font-bold text-sm tracking-widest uppercase text-white/90">
-              TourneyOS
+              NammaLeague
             </span>
           </Link>
 

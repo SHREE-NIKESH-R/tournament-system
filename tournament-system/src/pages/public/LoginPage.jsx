@@ -59,7 +59,7 @@ export default function LoginPage() {
           </div>
           <div>
             <h1 className="font-[Orbitron] font-black text-sm uppercase tracking-widest text-white/90">
-              TourneyOS
+              NammaLeague
             </h1>
             <p className="text-xs text-white/30">
               {mode === 'login' ? 'Sign in to continue' : 'Create account'}
