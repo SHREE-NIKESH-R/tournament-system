@@ -9,16 +9,10 @@ if (!supabaseUrl || !supabaseAnonKey) {
     );
 }
 
-// Custom lock implementation that avoids the Web Locks API
-// which causes "Lock broken by another request" on mobile browsers
-const noopLock = async(name, acquireConfig, fn) => fn()
-
 export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
   auth: {
-    autoRefreshToken: true,
-    persistSession: true,
-    detectSessionInUrl: true,
-    storage: window.localStorage, // ← ADD THIS
-    lock: "none", // ← ADD THIS
+    autoRefreshToken: false,
+    persistSession: false,
+    detectSessionInUrl: false,
   },
 });
