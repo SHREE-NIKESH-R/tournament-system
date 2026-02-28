@@ -1,121 +1,172 @@
-import { useState, useEffect } from 'react'
-import { supabase } from '@/lib/supabase'
-import toast from 'react-hot-toast'
+import { useState, useEffect, useCallback } from "react";
+import { supabase } from "@/lib/supabase";
+import toast from "react-hot-toast";
+
+/* =========================
+   useTournaments Hook
+========================= */
 
 export function useTournaments() {
-  const [tournaments, setTournaments] = useState([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(null)
+  const [tournaments, setTournaments] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  async function fetchTournaments() {
-    setLoading(true)
-    setError(null)
+  const fetchTournaments = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+
     const { data, error } = await supabase
-      .from('tournaments')
-      .select('*')
-      .order('created_at', { ascending: false })
+      .from("tournaments")
+      .select("*")
+      .order("created_at", { ascending: false });
 
     if (error) {
-      setError(error.message || 'Failed to load tournaments')
-      toast.error(error.message || 'Failed to load tournaments')
+      console.error("[useTournaments] Supabase error:", error);
+      setError(error.message);
+      toast.error(`Failed to load tournaments: ${error.message}`);
+      setTournaments([]);
     } else {
-      setTournaments(data || [])
+      setTournaments(data || []);
     }
-    setLoading(false)
-  }
+
+    setLoading(false);
+  }, []);
 
   useEffect(() => {
-    fetchTournaments()
-  }, [])
+    fetchTournaments();
+  }, [fetchTournaments]);
 
-  return { tournaments, loading, error, refetch: fetchTournaments }
+  return { tournaments, loading, error, refetch: fetchTournaments };
 }
 
-export function useTournament(id) {
-  const [tournament, setTournament] = useState(null)
-  const [matches, setMatches] = useState([])
-  const [standings, setStandings] = useState([])
-  const [players, setPlayers] = useState([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(null)
+/* =========================
+   useTournament Hook
+========================= */
 
-  async function fetchTournament() {
-    if (!id) return
-    setLoading(true)
-    setError(null)
+export function useTournament(id) {
+  const [tournament, setTournament] = useState(null);
+  const [matches, setMatches] = useState([]);
+  const [standings, setStandings] = useState([]);
+  const [players, setPlayers] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  const fetchTournament = useCallback(async () => {
+    if (!id) return;
+
+    setLoading(true);
+    setError(null);
 
     const [tResult, mResult, sResult] = await Promise.all([
-      supabase.from('tournaments').select('*').eq('id', id).single(),
+      supabase.from("tournaments").select("*").eq("id", id).single(),
+
       supabase
-        .from('matches')
-        .select(`
+        .from("matches")
+        .select(
+          `
           *,
           player1:players!matches_player1_id_fkey(id, name),
           player2:players!matches_player2_id_fkey(id, name),
           winner:players!matches_winner_id_fkey(id, name)
-        `)
-        .eq('tournament_id', id)
-        .order('round_number')
-        .order('created_at'),
+        `,
+        )
+        .eq("tournament_id", id)
+        .order("round_number", { ascending: true })
+        .order("created_at", { ascending: true }),
+
       supabase
-        .from('standings')
-        .select(`*, player:players(id, name)`)
-        .eq('tournament_id', id)
-        .order('points', { ascending: false })
-        .order('wins', { ascending: false }),
-    ])
+        .from("standings")
+        .select(
+          `
+          *,
+          player:players(id, name)
+        `,
+        )
+        .eq("tournament_id", id)
+        .order("points", { ascending: false })
+        .order("wins", { ascending: false }),
+    ]);
 
     if (tResult.error) {
-      setError(tResult.error.message || 'Tournament not found')
-      toast.error(tResult.error.message || 'Tournament not found')
+      console.error("[useTournament] tournament error:", tResult.error);
+      setError(tResult.error.message);
+      toast.error(`Tournament error: ${tResult.error.message}`);
     }
-    if (mResult.error) setError(mResult.error.message || 'Failed to load matches')
-    if (sResult.error) setError(sResult.error.message || 'Failed to load standings')
-    setTournament(tResult.data)
-    setMatches(mResult.data || [])
-    setStandings(sResult.data || [])
 
-    // Extract unique players
-    const playerMap = new Map()
-    ;(mResult.data || []).forEach((m) => {
-      if (m.player1) playerMap.set(m.player1.id, m.player1)
-      if (m.player2) playerMap.set(m.player2.id, m.player2)
-    })
-    setPlayers([...playerMap.values()])
+    if (mResult.error) {
+      console.error("[useTournament] matches error:", mResult.error);
+      toast.error(`Matches error: ${mResult.error.message}`);
+    }
 
-    setLoading(false)
-  }
+    if (sResult.error) {
+      console.error("[useTournament] standings error:", sResult.error);
+      toast.error(`Standings error: ${sResult.error.message}`);
+    }
+
+    setTournament(tResult.data || null);
+    setMatches(mResult.data || []);
+    setStandings(sResult.data || []);
+
+    const playerMap = new Map();
+
+    (mResult.data || []).forEach((match) => {
+      if (match.player1) playerMap.set(match.player1.id, match.player1);
+      if (match.player2) playerMap.set(match.player2.id, match.player2);
+    });
+
+    setPlayers(Array.from(playerMap.values()));
+
+    setLoading(false);
+  }, [id]);
 
   useEffect(() => {
-    fetchTournament()
-  }, [id])
+    fetchTournament();
+  }, [fetchTournament]);
 
-  return { tournament, matches, standings, players, loading, error, refetch: fetchTournament }
+  return {
+    tournament,
+    matches,
+    standings,
+    players,
+    loading,
+    error,
+    refetch: fetchTournament,
+  };
 }
 
-export function usePlayers() {
-  const [players, setPlayers] = useState([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(null)
+/* =========================
+   usePlayers Hook
+========================= */
 
-  async function fetchPlayers() {
-    setError(null)
+export function usePlayers() {
+  const [players, setPlayers] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  const fetchPlayers = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+
     const { data, error } = await supabase
-      .from('players')
-      .select('*')
-      .order('name')
+      .from("players")
+      .select("*")
+      .order("name", { ascending: true });
 
     if (error) {
-      setError(error.message || 'Failed to load players')
+      console.error("[usePlayers] error:", error);
+      setError(error.message);
+      toast.error(`Failed to load players: ${error.message}`);
+      setPlayers([]);
     } else {
-      setPlayers(data || [])
+      setPlayers(data || []);
     }
-    setLoading(false)
-  }
+
+    setLoading(false);
+  }, []);
 
   useEffect(() => {
-    fetchPlayers()
-  }, [])
+    fetchPlayers();
+  }, [fetchPlayers]);
 
-  return { players, loading, error, refetch: fetchPlayers }
+  return { players, loading, error, refetch: fetchPlayers };
 }
