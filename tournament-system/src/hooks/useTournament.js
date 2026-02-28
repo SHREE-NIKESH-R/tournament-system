@@ -14,22 +14,29 @@ export function useTournaments() {
   const fetchTournaments = useCallback(async () => {
     setLoading(true);
     setError(null);
+    try {
+      const { data, error } = await supabase
+        .from("tournaments")
+        .select("*")
+        .order("created_at", { ascending: false });
 
-    const { data, error } = await supabase
-      .from("tournaments")
-      .select("*")
-      .order("created_at", { ascending: false });
-
-    if (error) {
-      console.error("[useTournaments] Supabase error:", error);
-      setError(error.message);
-      toast.error(`Failed to load tournaments: ${error.message}`);
+      if (error) {
+        console.error("[useTournaments] Supabase error:", error);
+        setError(error.message || "Failed to load tournaments");
+        toast.error(`Failed to load tournaments: ${error.message}`);
+        setTournaments([]);
+      } else {
+        setTournaments(data || []);
+      }
+    } catch (err) {
+      const message = err?.message || "Network request failed";
+      console.error("[useTournaments] unexpected error:", err);
+      setError(message);
+      toast.error(`Failed to load tournaments: ${message}`);
       setTournaments([]);
-    } else {
-      setTournaments(data || []);
+    } finally {
+      setLoading(false);
     }
-
-    setLoading(false);
   }, []);
 
   useEffect(() => {
@@ -56,67 +63,75 @@ export function useTournament(id) {
 
     setLoading(true);
     setError(null);
+    try {
+      const [tResult, mResult, sResult] = await Promise.all([
+        supabase.from("tournaments").select("*").eq("id", id).single(),
 
-    const [tResult, mResult, sResult] = await Promise.all([
-      supabase.from("tournaments").select("*").eq("id", id).single(),
+        supabase
+          .from("matches")
+          .select(
+            `
+            *,
+            player1:players!matches_player1_id_fkey(id, name),
+            player2:players!matches_player2_id_fkey(id, name),
+            winner:players!matches_winner_id_fkey(id, name)
+          `,
+          )
+          .eq("tournament_id", id)
+          .order("round_number", { ascending: true })
+          .order("created_at", { ascending: true }),
 
-      supabase
-        .from("matches")
-        .select(
-          `
-          *,
-          player1:players!matches_player1_id_fkey(id, name),
-          player2:players!matches_player2_id_fkey(id, name),
-          winner:players!matches_winner_id_fkey(id, name)
-        `,
-        )
-        .eq("tournament_id", id)
-        .order("round_number", { ascending: true })
-        .order("created_at", { ascending: true }),
+        supabase
+          .from("standings")
+          .select(
+            `
+            *,
+            player:players(id, name)
+          `,
+          )
+          .eq("tournament_id", id)
+          .order("points", { ascending: false })
+          .order("wins", { ascending: false }),
+      ]);
 
-      supabase
-        .from("standings")
-        .select(
-          `
-          *,
-          player:players(id, name)
-        `,
-        )
-        .eq("tournament_id", id)
-        .order("points", { ascending: false })
-        .order("wins", { ascending: false }),
-    ]);
+      if (tResult.error) {
+        console.error("[useTournament] tournament error:", tResult.error);
+        setError(tResult.error.message || "Tournament not found");
+        toast.error(`Tournament error: ${tResult.error.message}`);
+      }
 
-    if (tResult.error) {
-      console.error("[useTournament] tournament error:", tResult.error);
-      setError(tResult.error.message);
-      toast.error(`Tournament error: ${tResult.error.message}`);
+      if (mResult.error) {
+        console.error("[useTournament] matches error:", mResult.error);
+        toast.error(`Matches error: ${mResult.error.message}`);
+      }
+
+      if (sResult.error) {
+        console.error("[useTournament] standings error:", sResult.error);
+        toast.error(`Standings error: ${sResult.error.message}`);
+      }
+
+      setTournament(tResult.data || null);
+      setMatches(mResult.data || []);
+      setStandings(sResult.data || []);
+
+      const playerMap = new Map();
+      (mResult.data || []).forEach((match) => {
+        if (match.player1) playerMap.set(match.player1.id, match.player1);
+        if (match.player2) playerMap.set(match.player2.id, match.player2);
+      });
+      setPlayers(Array.from(playerMap.values()));
+    } catch (err) {
+      const message = err?.message || "Network request failed";
+      console.error("[useTournament] unexpected error:", err);
+      setError(message);
+      toast.error(`Tournament error: ${message}`);
+      setTournament(null);
+      setMatches([]);
+      setStandings([]);
+      setPlayers([]);
+    } finally {
+      setLoading(false);
     }
-
-    if (mResult.error) {
-      console.error("[useTournament] matches error:", mResult.error);
-      toast.error(`Matches error: ${mResult.error.message}`);
-    }
-
-    if (sResult.error) {
-      console.error("[useTournament] standings error:", sResult.error);
-      toast.error(`Standings error: ${sResult.error.message}`);
-    }
-
-    setTournament(tResult.data || null);
-    setMatches(mResult.data || []);
-    setStandings(sResult.data || []);
-
-    const playerMap = new Map();
-
-    (mResult.data || []).forEach((match) => {
-      if (match.player1) playerMap.set(match.player1.id, match.player1);
-      if (match.player2) playerMap.set(match.player2.id, match.player2);
-    });
-
-    setPlayers(Array.from(playerMap.values()));
-
-    setLoading(false);
   }, [id]);
 
   useEffect(() => {
@@ -146,22 +161,29 @@ export function usePlayers() {
   const fetchPlayers = useCallback(async () => {
     setLoading(true);
     setError(null);
+    try {
+      const { data, error } = await supabase
+        .from("players")
+        .select("*")
+        .order("name", { ascending: true });
 
-    const { data, error } = await supabase
-      .from("players")
-      .select("*")
-      .order("name", { ascending: true });
-
-    if (error) {
-      console.error("[usePlayers] error:", error);
-      setError(error.message);
-      toast.error(`Failed to load players: ${error.message}`);
+      if (error) {
+        console.error("[usePlayers] error:", error);
+        setError(error.message || "Failed to load players");
+        toast.error(`Failed to load players: ${error.message}`);
+        setPlayers([]);
+      } else {
+        setPlayers(data || []);
+      }
+    } catch (err) {
+      const message = err?.message || "Network request failed";
+      console.error("[usePlayers] unexpected error:", err);
+      setError(message);
+      toast.error(`Failed to load players: ${message}`);
       setPlayers([]);
-    } else {
-      setPlayers(data || []);
+    } finally {
+      setLoading(false);
     }
-
-    setLoading(false);
   }, []);
 
   useEffect(() => {
