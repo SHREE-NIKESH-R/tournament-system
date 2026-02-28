@@ -40,7 +40,7 @@ export default function AdminLayout() {
             <Trophy className="w-3.5 h-3.5 text-neon-purple" />
           </div>
           <span className="font-[Orbitron] font-bold text-xs tracking-widest uppercase text-white/90">
-            TourneyOS
+            NammaLeague
           </span>
         </div>
         <div className="px-5 py-3 border-b border-white/5">

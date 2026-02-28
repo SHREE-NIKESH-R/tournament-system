@@ -1,8 +1,8 @@
-import { motion } from "framer-motion";
+﻿import { motion } from "framer-motion";
 import { Trophy, Swords, Crown } from "lucide-react";
 import Card, { CardHeader, CardTitle } from "@/components/ui/Card";
 
-/* ───────────────── Layout Constants ───────────────── */
+/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ Layout Constants â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 
 const CARD_W = 200;
 const CARD_H = 90;
@@ -12,7 +12,7 @@ const COL_GAP = 56;
 const MIN_ROW_GAP = 24; // slightly increased for better spacing
 const LABEL_OFFSET = 28; // unified top offset for labels + svg + cards
 
-/* ───────────────── Layout Engine ───────────────── */
+/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ Layout Engine â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 
 function computeLayout(rounds) {
   const roundNums = Object.keys(rounds)
@@ -46,7 +46,7 @@ function computeLayout(rounds) {
   return { positions, totalHeight, roundNums };
 }
 
-/* ───────────────── Player Slot ───────────────── */
+/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ Player Slot â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 
 function PlayerSlot({ name, isWinner, isLoser, completed }) {
   return (
@@ -80,7 +80,7 @@ function PlayerSlot({ name, isWinner, isLoser, completed }) {
   );
 }
 
-/* ───────────────── Match Card ───────────────── */
+/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ Match Card â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 
 function MatchCard({ match, isFinal }) {
   const p1Wins = match.completed && match.winner_id === match.player1_id;
@@ -131,7 +131,7 @@ function MatchCard({ match, isFinal }) {
       >
         {match.completed ? (
           <span className="text-[10px] tracking-wider text-cyan-400/80">
-            {isDraw ? "⚡ Draw" : `✓ ${match.winner?.name ?? "TBD"} wins`}
+            {isDraw ? "âš¡ Draw" : `âœ“ ${match.winner?.name ?? "TBD"} wins`}
           </span>
         ) : (
           <span className="text-[10px] text-white/18">Pending</span>
@@ -141,7 +141,7 @@ function MatchCard({ match, isFinal }) {
   );
 }
 
-/* ───────────────── Champion Banner ───────────────── */
+/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ Champion Banner â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 
 function ChampionBanner({ name, x, y }) {
   return (
@@ -168,7 +168,7 @@ function ChampionBanner({ name, x, y }) {
   );
 }
 
-/* ───────────────── Main Component ───────────────── */
+/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ Main Component â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 
 export default function BracketView({ matches, loading }) {
   if (loading) return null;
@@ -194,7 +194,7 @@ export default function BracketView({ matches, loading }) {
 
   const canvasHeight = Math.max(totalHeight, 200);
 
-  /* ───── Connector Lines ───── */
+  /* â”€â”€â”€â”€â”€ Connector Lines â”€â”€â”€â”€â”€ */
 
   const connectorPaths = [];
 
@@ -257,7 +257,7 @@ export default function BracketView({ matches, loading }) {
     }
   }
 
-  /* ───── Render ───── */
+  /* â”€â”€â”€â”€â”€ Render â”€â”€â”€â”€â”€ */
 
   return (
     <Card>
@@ -267,7 +267,7 @@ export default function BracketView({ matches, loading }) {
         </CardTitle>
       </CardHeader>
 
-      <div className="overflow-x-auto pb-6 pt-2">
+      <div className="overflow-x-visible pb-6 pt-2">
         <div
           className="relative"
           style={{
@@ -317,3 +317,4 @@ export default function BracketView({ matches, loading }) {
     </Card>
   );
 }
+

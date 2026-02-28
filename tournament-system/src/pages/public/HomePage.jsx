@@ -1,4 +1,4 @@
-import { useState } from 'react'
+﻿import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { Trophy, Search, AlertCircle, RefreshCw } from "lucide-react";
 import { useTournaments } from '@/hooks/useTournament'
@@ -31,7 +31,6 @@ export default function HomePage() {
 
   return (
     <PageTransition>
-      {/* Hero */}
       <div className="text-center mb-10 pt-4">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -48,7 +47,7 @@ export default function HomePage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="text-3xl sm:text-4xl md:text-5xl font-[Orbitron] font-black text-white mb-4 leading-tight"
+          className="text-5xl font-[Orbitron] font-black text-white mb-4 leading-tight"
         >
           <span className="neon-text-purple">NammaLeague</span>
         </motion.h1>
@@ -57,40 +56,38 @@ export default function HomePage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.15 }}
-          className="text-white/40 max-w-md mx-auto text-sm sm:text-base px-4"
+          className="text-white/40 max-w-md mx-auto text-base"
         >
-          Track your Chess and Clash Royale tournaments — League tables and
+          Track your Chess and Clash Royale tournaments - League tables and
           knockout brackets in one place.
         </motion.p>
       </div>
 
-      {/* Search + Filters */}
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.2 }}
-        className="flex flex-col gap-3 mb-6"
+        className="flex items-center gap-3 mb-6"
       >
-        <div className="relative">
+        <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30" />
           <input
             className="w-full pl-10 pr-4 py-2.5 rounded-lg bg-white/5 border border-white/10
               text-white/90 placeholder:text-white/25 text-sm focus:outline-none
               focus:border-neon-purple/40 transition-all font-[Rajdhani]"
-            placeholder="Search tournaments…"
+            placeholder="Search tournaments..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
         </div>
 
-        {/* Filter chips — scrollable on mobile */}
-        <div className="flex gap-1.5 overflow-x-auto pb-1 scrollbar-none">
+        <div className="flex gap-1.5">
           {filters.map((f) => (
             <button
               key={f.value}
               onClick={() => setFilter(f.value)}
               className={`px-3 py-2 rounded-lg text-xs font-[Orbitron] uppercase tracking-wider
-                transition-all whitespace-nowrap shrink-0
+                transition-all
                 ${
                   filter === f.value
                     ? "bg-neon-purple/20 border border-neon-purple/40 text-neon-purple"
@@ -103,7 +100,6 @@ export default function HomePage() {
         </div>
       </motion.div>
 
-      {/* ── Error state ── */}
       {error && !loading && (
         <motion.div
           initial={{ opacity: 0, y: -8 }}
@@ -118,10 +114,6 @@ export default function HomePage() {
             <p className="text-xs text-red-400/70 font-mono break-all">
               {error}
             </p>
-            <p className="text-xs text-white/40 mt-2">
-              This is usually a Supabase RLS policy issue. Run the SQL fix below
-              in your Supabase SQL Editor.
-            </p>
           </div>
           <button
             onClick={refetch}
@@ -134,25 +126,22 @@ export default function HomePage() {
         </motion.div>
       )}
 
-      {/* ── Loading skeletons ── */}
       {loading && (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-3 gap-4">
           {[...Array(6)].map((_, i) => (
             <TournamentCardSkeleton key={i} />
           ))}
         </div>
       )}
 
-      {/* ── Tournament grid ── */}
       {!loading && !error && filtered.length > 0 && (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-3 gap-4">
           {filtered.map((t, i) => (
             <TournamentCard key={t.id} tournament={t} index={i} />
           ))}
         </div>
       )}
 
-      {/* ── Empty state ── */}
       {!loading && !error && filtered.length === 0 && (
         <motion.div
           initial={{ opacity: 0 }}

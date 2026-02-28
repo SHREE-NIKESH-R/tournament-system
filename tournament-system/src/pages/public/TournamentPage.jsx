@@ -1,4 +1,4 @@
-import { useParams, Link } from 'react-router-dom'
+﻿import { useParams, Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { ArrowLeft, Trophy } from "lucide-react";
 import { useTournament } from '@/hooks/useTournament'
@@ -9,7 +9,7 @@ import Badge from '@/components/ui/Badge'
 import { getStatusConfig, getTypeConfig, formatDate } from '@/utils/tournament'
 import Card, { CardHeader, CardTitle } from '@/components/ui/Card'
 
-// ─── Single match row for league rounds ───────────────────────────────────────
+// â”€â”€â”€ Single match row for league rounds â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function MatchRow({ match, index }) {
   const p1Wins = match.completed && match.winner_id === match.player1_id;
   const p2Wins = match.completed && match.winner_id === match.player2_id;
@@ -91,7 +91,7 @@ function RoundGroup({ roundName, matches }) {
   );
 }
 
-// ─── Page ─────────────────────────────────────────────────────────────────────
+// â”€â”€â”€ Page â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 export default function TournamentPage() {
   const { id } = useParams()
   const { tournament, matches, standings, loading } = useTournament(id)
@@ -109,7 +109,7 @@ export default function TournamentPage() {
       <div className="text-center py-20 text-white/30">
         <p className="font-[Orbitron] uppercase tracking-widest">Tournament not found</p>
         <Link to="/" className="text-neon-purple text-sm mt-4 inline-block hover:underline">
-          ← Back to home
+          â† Back to home
         </Link>
       </div>
     )
@@ -149,7 +149,7 @@ export default function TournamentPage() {
             {formatDate(tournament.created_at)}
           </span>
         </div>
-        <h1 className="text-2xl md:text-3xl font-[Orbitron] font-black text-white mb-1">
+        <h1 className="text-3xl font-[Orbitron] font-black text-white mb-1">
           {tournament.name}
         </h1>
         {tournament.type === "league" && (
@@ -159,13 +159,13 @@ export default function TournamentPage() {
             {tournament.allow_draw && (
               <>
                 {" "}
-                · Draw:{" "}
+                Â· Draw:{" "}
                 <span className="text-neon-cyan">
                   {tournament.draw_points}pts
                 </span>
               </>
             )}{" "}
-            · Loss:{" "}
+            Â· Loss:{" "}
             <span className="text-white/25">{tournament.loss_points}pts</span>
           </p>
         )}
@@ -173,11 +173,11 @@ export default function TournamentPage() {
 
       {/* Content */}
       {tournament.type === "league" ? (
-        <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
-          <div className="lg:col-span-2">
+        <div className="grid grid-cols-5 gap-6">
+          <div className="col-span-2">
             <Leaderboard standings={standings} loading={loading} />
           </div>
-          <div className="lg:col-span-3">
+          <div className="col-span-3">
             <Card>
               <CardHeader>
                 <CardTitle>Rounds</CardTitle>
@@ -209,3 +209,4 @@ export default function TournamentPage() {
     </PageTransition>
   );
 }
+
