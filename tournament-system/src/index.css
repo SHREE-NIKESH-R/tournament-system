@@ -1,0 +1,156 @@
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@300;400;500;600;700&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 240 15% 4%;
+    --foreground: 220 20% 95%;
+    --card: 240 12% 7%;
+    --card-foreground: 220 20% 95%;
+    --popover: 240 12% 7%;
+    --popover-foreground: 220 20% 95%;
+    --primary: 280 90% 65%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 185 90% 55%;
+    --secondary-foreground: 0 0% 5%;
+    --muted: 240 10% 14%;
+    --muted-foreground: 220 15% 55%;
+    --accent: 185 90% 55%;
+    --accent-foreground: 0 0% 5%;
+    --destructive: 0 80% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 240 10% 12%;
+    --input: 240 10% 12%;
+    --ring: 280 90% 65%;
+    --radius: 0.75rem;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+    box-sizing: border-box;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 400;
+    background: #060611;
+    background-image:
+      radial-gradient(ellipse 80% 50% at 50% -20%, rgba(184, 69, 245, 0.15) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 40% at 80% 80%, rgba(6, 214, 245, 0.08) 0%, transparent 50%);
+    min-height: 100vh;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Orbitron', sans-serif;
+  }
+
+  code, pre, .mono {
+    font-family: 'Space Mono', monospace;
+  }
+}
+
+@layer utilities {
+  .glass {
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+  }
+
+  .glass-card {
+    background: rgba(255, 255, 255, 0.04);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(184, 69, 245, 0.15);
+    box-shadow:
+      0 8px 32px rgba(0, 0, 0, 0.4),
+      inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  }
+
+  .glass-card:hover {
+    border-color: rgba(184, 69, 245, 0.3);
+    box-shadow:
+      0 8px 32px rgba(0, 0, 0, 0.4),
+      0 0 20px rgba(184, 69, 245, 0.1),
+      inset 0 1px 0 rgba(255, 255, 255, 0.07);
+  }
+
+  .neon-text-purple {
+    color: #b845f5;
+    text-shadow: 0 0 10px rgba(184, 69, 245, 0.8), 0 0 30px rgba(184, 69, 245, 0.4);
+  }
+
+  .neon-text-cyan {
+    color: #06d6f5;
+    text-shadow: 0 0 10px rgba(6, 214, 245, 0.8), 0 0 30px rgba(6, 214, 245, 0.4);
+  }
+
+  .btn-neon-purple {
+    background: linear-gradient(135deg, rgba(184, 69, 245, 0.2), rgba(184, 69, 245, 0.1));
+    border: 1px solid rgba(184, 69, 245, 0.5);
+    color: #d490ff;
+    transition: all 0.2s ease;
+  }
+
+  .btn-neon-purple:hover {
+    background: linear-gradient(135deg, rgba(184, 69, 245, 0.35), rgba(184, 69, 245, 0.2));
+    border-color: #b845f5;
+    box-shadow: 0 0 20px rgba(184, 69, 245, 0.4), 0 0 40px rgba(184, 69, 245, 0.2);
+    color: #e8b0ff;
+  }
+
+  .btn-neon-cyan {
+    background: linear-gradient(135deg, rgba(6, 214, 245, 0.2), rgba(6, 214, 245, 0.1));
+    border: 1px solid rgba(6, 214, 245, 0.5);
+    color: #6ee6f5;
+    transition: all 0.2s ease;
+  }
+
+  .btn-neon-cyan:hover {
+    background: linear-gradient(135deg, rgba(6, 214, 245, 0.35), rgba(6, 214, 245, 0.2));
+    border-color: #06d6f5;
+    box-shadow: 0 0 20px rgba(6, 214, 245, 0.4), 0 0 40px rgba(6, 214, 245, 0.2);
+    color: #a8f0f8;
+  }
+
+  .grid-bg {
+    background-image: linear-gradient(rgba(184, 69, 245, 0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(184, 69, 245, 0.05) 1px, transparent 1px);
+    background-size: 40px 40px;
+  }
+
+  .skeleton {
+    background: linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.03) 25%,
+      rgba(184, 69, 245, 0.08) 50%,
+      rgba(255, 255, 255, 0.03) 75%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 2s linear infinite;
+  }
+
+  .scrollbar-neon {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(184, 69, 245, 0.4) transparent;
+  }
+
+  .scrollbar-neon::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  .scrollbar-neon::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .scrollbar-neon::-webkit-scrollbar-thumb {
+    background: rgba(184, 69, 245, 0.4);
+    border-radius: 2px;
+  }
+}
