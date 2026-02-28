@@ -1,16 +1,23 @@
 import { createClient } from '@supabase/supabase-js'
 
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
 if (!supabaseUrl || !supabaseAnonKey) {
-  throw new Error('Missing Supabase environment variables. Check your .env file.')
+    throw new Error(
+      "Missing Supabase environment variables. Check your .env file.",
+    );
 }
+
+// Custom lock implementation that avoids the Web Locks API
+// which causes "Lock broken by another request" on mobile browsers
+const noopLock = async(name, acquireConfig, fn) => fn()
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
   auth: {
     autoRefreshToken: true,
     persistSession: true,
     detectSessionInUrl: true,
+    lock: noopLock,
   },
-})
+});
