@@ -43,22 +43,29 @@ export default function AdminLayout() {
             TourneyOS
           </span>
         </div>
+
         <div className="px-5 py-3 border-b border-white/5">
           <span className="text-xs font-[Orbitron] uppercase tracking-widest text-neon-purple/60">
             Admin Panel
           </span>
         </div>
+
         <nav className="flex-1 p-3 space-y-1">
           {navItems.map(({ to, icon: Icon, label, exact }) => {
             const isActive = exact
               ? location.pathname === to
               : location.pathname.startsWith(to);
+
             return (
               <Link
                 key={to}
                 to={to}
                 className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-all
-                  ${isActive ? "bg-neon-purple/15 text-neon-purple border border-neon-purple/20" : "text-white/50 hover:bg-white/5 hover:text-white/80"}`}
+                  ${
+                    isActive
+                      ? "bg-neon-purple/15 text-neon-purple border border-neon-purple/20"
+                      : "text-white/50 hover:bg-white/5 hover:text-white/80"
+                  }`}
               >
                 <Icon className="w-4 h-4" />
                 <span className="font-[Orbitron] text-xs uppercase tracking-wider">
@@ -69,10 +76,12 @@ export default function AdminLayout() {
             );
           })}
         </nav>
+
         <div className="p-3 space-y-1 border-t border-white/5">
           <Link
             to="/"
-            className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-white/40 hover:bg-white/5 hover:text-white/70 transition-all"
+            className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-white/40
+              hover:bg-white/5 hover:text-white/70 transition-all"
           >
             <Home className="w-4 h-4" />
             <span className="font-[Orbitron] text-xs uppercase tracking-wider">
@@ -81,7 +90,8 @@ export default function AdminLayout() {
           </Link>
           <button
             onClick={handleSignOut}
-            className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-red-400/60 hover:bg-red-500/10 hover:text-red-400 transition-all"
+            className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-red-400/60
+              hover:bg-red-500/10 hover:text-red-400 transition-all"
           >
             <LogOut className="w-4 h-4" />
             <span className="font-[Orbitron] text-xs uppercase tracking-wider">
@@ -90,6 +100,7 @@ export default function AdminLayout() {
           </button>
         </div>
       </aside>
+
       <main className="flex-1 overflow-auto">
         <div className="max-w-5xl mx-auto p-8">
           <Outlet />
