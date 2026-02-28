@@ -5,9 +5,10 @@ import { useTournaments } from '@/hooks/useTournament'
 import TournamentCard from '@/components/public/TournamentCard'
 import { TournamentCardSkeleton } from '@/components/ui/Skeleton'
 import PageTransition from '@/components/shared/PageTransition'
+import Button from '@/components/ui/Button'
 
 export default function HomePage() {
-  const { tournaments, loading } = useTournaments()
+  const { tournaments, loading, error, refetch } = useTournaments()
   const [search, setSearch] = useState('')
   const [filter, setFilter] = useState('all') // all | live | finished | league | knockout
 
@@ -107,6 +108,18 @@ export default function HomePage() {
             <TournamentCardSkeleton key={i} />
           ))}
         </div>
+      ) : error ? (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="glass-card rounded-xl p-6 text-center"
+        >
+          <p className="text-sm text-red-300/90 mb-3">Could not load tournaments</p>
+          <p className="text-xs text-white/45 mb-4 break-all">{error}</p>
+          <Button size="sm" variant="ghost" onClick={refetch}>
+            Retry
+          </Button>
+        </motion.div>
       ) : filtered.length > 0 ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {filtered.map((t, i) => (

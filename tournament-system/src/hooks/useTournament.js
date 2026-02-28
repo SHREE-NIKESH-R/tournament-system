@@ -5,16 +5,19 @@ import toast from 'react-hot-toast'
 export function useTournaments() {
   const [tournaments, setTournaments] = useState([])
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
 
   async function fetchTournaments() {
     setLoading(true)
+    setError(null)
     const { data, error } = await supabase
       .from('tournaments')
       .select('*')
       .order('created_at', { ascending: false })
 
     if (error) {
-      toast.error('Failed to load tournaments')
+      setError(error.message || 'Failed to load tournaments')
+      toast.error(error.message || 'Failed to load tournaments')
     } else {
       setTournaments(data || [])
     }
@@ -25,7 +28,7 @@ export function useTournaments() {
     fetchTournaments()
   }, [])
 
-  return { tournaments, loading, refetch: fetchTournaments }
+  return { tournaments, loading, error, refetch: fetchTournaments }
 }
 
 export function useTournament(id) {
@@ -34,10 +37,12 @@ export function useTournament(id) {
   const [standings, setStandings] = useState([])
   const [players, setPlayers] = useState([])
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
 
   async function fetchTournament() {
     if (!id) return
     setLoading(true)
+    setError(null)
 
     const [tResult, mResult, sResult] = await Promise.all([
       supabase.from('tournaments').select('*').eq('id', id).single(),
@@ -60,7 +65,12 @@ export function useTournament(id) {
         .order('wins', { ascending: false }),
     ])
 
-    if (tResult.error) toast.error('Tournament not found')
+    if (tResult.error) {
+      setError(tResult.error.message || 'Tournament not found')
+      toast.error(tResult.error.message || 'Tournament not found')
+    }
+    if (mResult.error) setError(mResult.error.message || 'Failed to load matches')
+    if (sResult.error) setError(sResult.error.message || 'Failed to load standings')
     setTournament(tResult.data)
     setMatches(mResult.data || [])
     setStandings(sResult.data || [])
@@ -80,20 +90,26 @@ export function useTournament(id) {
     fetchTournament()
   }, [id])
 
-  return { tournament, matches, standings, players, loading, refetch: fetchTournament }
+  return { tournament, matches, standings, players, loading, error, refetch: fetchTournament }
 }
 
 export function usePlayers() {
   const [players, setPlayers] = useState([])
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
 
   async function fetchPlayers() {
+    setError(null)
     const { data, error } = await supabase
       .from('players')
       .select('*')
       .order('name')
 
-    if (!error) setPlayers(data || [])
+    if (error) {
+      setError(error.message || 'Failed to load players')
+    } else {
+      setPlayers(data || [])
+    }
     setLoading(false)
   }
 
@@ -101,5 +117,5 @@ export function usePlayers() {
     fetchPlayers()
   }, [])
 
-  return { players, loading, refetch: fetchPlayers }
+  return { players, loading, error, refetch: fetchPlayers }
 }

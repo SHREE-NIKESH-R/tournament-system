@@ -11,7 +11,7 @@ import PageTransition from '@/components/shared/PageTransition'
 import { getStatusConfig, getTypeConfig, formatDate } from '@/utils/tournament'
 
 export default function AdminDashboard() {
-  const { tournaments, loading } = useTournaments()
+  const { tournaments, loading, error, refetch } = useTournaments()
   const [createType, setCreateType] = useState(null);
 
   const live = tournaments.filter((t) => t.status === "live");
@@ -91,6 +91,14 @@ export default function AdminDashboard() {
             {[...Array(4)].map((_, i) => (
               <TournamentCardSkeleton key={i} />
             ))}
+          </div>
+        ) : error ? (
+          <div className="glass-card rounded-xl py-12 px-4 text-center">
+            <p className="text-sm text-red-300/90 mb-2">Could not load tournaments</p>
+            <p className="text-xs text-white/45 mb-4 break-all">{error}</p>
+            <Button variant="ghost" size="sm" onClick={refetch}>
+              Retry
+            </Button>
           </div>
         ) : tournaments.length === 0 ? (
           <div className="glass-card rounded-xl py-16 flex flex-col items-center justify-center text-white/30 gap-4">
