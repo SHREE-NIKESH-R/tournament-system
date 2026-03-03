@@ -1,52 +1,42 @@
-import { useParams, Link } from "react-router-dom";
-import { motion } from "framer-motion";
-import { ArrowLeft, CheckCircle2, Clock, Trophy } from "lucide-react";
-import { useTournament } from "@/hooks/useTournament";
-import MatchResultForm from "@/components/admin/MatchResultForm";
-import Leaderboard from "@/components/public/Leaderboard";
-import BracketView from "@/components/public/BracketView";
-import PageTransition from "@/components/shared/PageTransition";
-import Badge from "@/components/ui/Badge";
-import Card, { CardHeader, CardTitle } from "@/components/ui/Card";
-import { getStatusConfig, getTypeConfig, formatDate } from "@/utils/tournament";
+import { useParams, Link } from 'react-router-dom'
+import { motion } from 'framer-motion'
+import { ArrowLeft, CheckCircle2, Clock, Trophy } from 'lucide-react'
+import { useTournament } from '@/hooks/useTournament'
+import MatchResultForm from '@/components/admin/MatchResultForm'
+import Leaderboard from '@/components/public/Leaderboard'
+import BracketView from '@/components/public/BracketView'
+import PageTransition from '@/components/shared/PageTransition'
+import Badge from '@/components/ui/Badge'
+import Card, { CardHeader, CardTitle } from '@/components/ui/Card'
+import { getStatusConfig, getTypeConfig, formatDate } from '@/utils/tournament'
 
 // ─── MatchAdminRow ─────────────────────────────────────────────────────────────
-function MatchAdminRow({
-  match,
-  tournament,
-  totalPlayers,
-  onComplete,
-  isBlocked,
-}) {
-  const p1Wins = match.completed && match.winner_id === match.player1_id;
-  const p2Wins = match.completed && match.winner_id === match.player2_id;
-  const isDraw = match.completed && match.is_draw;
+function MatchAdminRow({ match, tournament, totalPlayers, onComplete, isBlocked }) {
+  const p1Wins = match.completed && match.winner_id === match.player1_id
+  const p2Wins = match.completed && match.winner_id === match.player2_id
+  const isDraw  = match.completed && match.is_draw
 
   return (
     <div
       className={`
         rounded-xl border transition-all duration-200 overflow-hidden
-        ${
-          match.completed
-            ? "border-white/[0.06] bg-white/[0.02]"
-            : isBlocked
-              ? "border-white/[0.04] opacity-50"
-              : "border-neon-purple/15 bg-neon-purple/[0.03] hover:border-neon-purple/25"
+        ${match.completed
+          ? 'border-white/[0.06] bg-white/[0.02]'
+          : isBlocked
+          ? 'border-white/[0.04] opacity-50'
+          : 'border-neon-purple/15 bg-neon-purple/[0.03] hover:border-neon-purple/25'
         }
       `}
     >
       {/* ── Desktop: side-by-side ── / ── Mobile: stacked ── */}
       <div className="hidden sm:grid grid-cols-[1fr_auto_1fr] items-stretch">
+
         {/* P1 desktop */}
-        <div
-          className={`px-4 py-3 flex items-center gap-2 ${p1Wins ? "bg-neon-cyan/10" : ""}`}
-        >
+        <div className={`px-4 py-3 flex items-center gap-2 ${p1Wins ? 'bg-neon-cyan/10' : ''}`}>
           <div className="flex-1 min-w-0">
-            <span
-              className={`block text-sm font-semibold truncate
-              ${p1Wins ? "text-neon-cyan" : isDraw ? "text-white/60" : "text-white/85"}`}
-            >
-              {match.player1?.name || "TBD"}
+            <span className={`block text-sm font-semibold truncate
+              ${p1Wins ? 'text-neon-cyan' : isDraw ? 'text-white/60' : 'text-white/85'}`}>
+              {match.player1?.name || 'TBD'}
             </span>
             {p1Wins && (
               <span className="text-[9px] font-[Orbitron] uppercase tracking-widest text-neon-cyan/70 flex items-center gap-1 mt-0.5">
@@ -54,41 +44,27 @@ function MatchAdminRow({
               </span>
             )}
           </div>
-          {p1Wins && (
-            <Trophy className="w-4 h-4 text-neon-cyan shrink-0 drop-shadow-[0_0_8px_rgba(6,214,245,0.7)]" />
-          )}
+          {p1Wins && <Trophy className="w-4 h-4 text-neon-cyan shrink-0 drop-shadow-[0_0_8px_rgba(6,214,245,0.7)]" />}
         </div>
 
         {/* VS desktop */}
         <div className="flex items-center justify-center px-3 border-x border-white/[0.04]">
           {match.completed ? (
-            isDraw ? (
-              <span className="text-[9px] font-[Orbitron] text-white/40 bg-white/5 px-2 py-1 rounded-full border border-white/10">
-                Draw
-              </span>
-            ) : (
-              <CheckCircle2 className="w-4 h-4 text-green-400" />
-            )
+            isDraw
+              ? <span className="text-[9px] font-[Orbitron] text-white/40 bg-white/5 px-2 py-1 rounded-full border border-white/10">Draw</span>
+              : <CheckCircle2 className="w-4 h-4 text-green-400" />
           ) : (
-            <span className="text-[10px] font-[Orbitron] text-white/20">
-              VS
-            </span>
+            <span className="text-[10px] font-[Orbitron] text-white/20">VS</span>
           )}
         </div>
 
         {/* P2 desktop */}
-        <div
-          className={`px-4 py-3 flex items-center gap-2 justify-end ${p2Wins ? "bg-neon-cyan/10" : ""}`}
-        >
-          {p2Wins && (
-            <Trophy className="w-4 h-4 text-neon-cyan shrink-0 drop-shadow-[0_0_8px_rgba(6,214,245,0.7)]" />
-          )}
+        <div className={`px-4 py-3 flex items-center gap-2 justify-end ${p2Wins ? 'bg-neon-cyan/10' : ''}`}>
+          {p2Wins && <Trophy className="w-4 h-4 text-neon-cyan shrink-0 drop-shadow-[0_0_8px_rgba(6,214,245,0.7)]" />}
           <div className="flex-1 min-w-0 text-right">
-            <span
-              className={`block text-sm font-semibold truncate
-              ${p2Wins ? "text-neon-cyan" : isDraw ? "text-white/60" : "text-white/85"}`}
-            >
-              {match.player2?.name || "TBD"}
+            <span className={`block text-sm font-semibold truncate
+              ${p2Wins ? 'text-neon-cyan' : isDraw ? 'text-white/60' : 'text-white/85'}`}>
+              {match.player2?.name || 'TBD'}
             </span>
             {p2Wins && (
               <span className="text-[9px] font-[Orbitron] uppercase tracking-widest text-neon-cyan/70 flex items-center gap-1 justify-end mt-0.5">
@@ -102,53 +78,37 @@ function MatchAdminRow({
       {/* ── Mobile: stacked layout ── */}
       <div className="sm:hidden">
         {/* P1 mobile */}
-        <div
-          className={`px-3 py-2.5 flex items-center gap-2 ${p1Wins ? "bg-neon-cyan/10 border-l-2 border-neon-cyan" : "border-l-2 border-transparent"}`}
-        >
-          <span
-            className={`flex-1 text-sm font-semibold truncate
-            ${p1Wins ? "text-neon-cyan" : isDraw ? "text-white/55" : "text-white/85"}`}
-          >
-            {match.player1?.name || "TBD"}
+        <div className={`px-3 py-2.5 flex items-center gap-2 ${p1Wins ? 'bg-neon-cyan/10 border-l-2 border-neon-cyan' : 'border-l-2 border-transparent'}`}>
+          <span className={`flex-1 text-sm font-semibold truncate
+            ${p1Wins ? 'text-neon-cyan' : isDraw ? 'text-white/55' : 'text-white/85'}`}>
+            {match.player1?.name || 'TBD'}
           </span>
           {p1Wins && <Trophy className="w-3.5 h-3.5 text-neon-cyan shrink-0" />}
-          {p1Wins && (
-            <span className="text-[9px] font-[Orbitron] text-neon-cyan/70 uppercase tracking-wider">
-              WIN
-            </span>
-          )}
+          {p1Wins && <span className="text-[9px] font-[Orbitron] text-neon-cyan/70 uppercase tracking-wider">WIN</span>}
         </div>
 
         {/* Divider with VS */}
         <div className="flex items-center gap-2 px-3 py-1">
           <div className="flex-1 h-px bg-white/[0.05]" />
           <span className="text-[9px] font-[Orbitron] text-white/20 uppercase tracking-widest">
-            {match.completed ? (isDraw ? "Draw" : "vs") : "vs"}
+            {match.completed ? (isDraw ? 'Draw' : 'vs') : 'vs'}
           </span>
           <div className="flex-1 h-px bg-white/[0.05]" />
         </div>
 
         {/* P2 mobile */}
-        <div
-          className={`px-3 py-2.5 flex items-center gap-2 ${p2Wins ? "bg-neon-cyan/10 border-l-2 border-neon-cyan" : "border-l-2 border-transparent"}`}
-        >
-          <span
-            className={`flex-1 text-sm font-semibold truncate
-            ${p2Wins ? "text-neon-cyan" : isDraw ? "text-white/55" : "text-white/85"}`}
-          >
-            {match.player2?.name || "TBD"}
+        <div className={`px-3 py-2.5 flex items-center gap-2 ${p2Wins ? 'bg-neon-cyan/10 border-l-2 border-neon-cyan' : 'border-l-2 border-transparent'}`}>
+          <span className={`flex-1 text-sm font-semibold truncate
+            ${p2Wins ? 'text-neon-cyan' : isDraw ? 'text-white/55' : 'text-white/85'}`}>
+            {match.player2?.name || 'TBD'}
           </span>
           {p2Wins && <Trophy className="w-3.5 h-3.5 text-neon-cyan shrink-0" />}
-          {p2Wins && (
-            <span className="text-[9px] font-[Orbitron] text-neon-cyan/70 uppercase tracking-wider">
-              WIN
-            </span>
-          )}
+          {p2Wins && <span className="text-[9px] font-[Orbitron] text-neon-cyan/70 uppercase tracking-wider">WIN</span>}
         </div>
       </div>
 
       {/* Result form / locked footer */}
-      {tournament.status !== "finished" && (
+      {tournament.status !== 'finished' && (
         <div className="px-3 sm:px-4 pb-3 border-t border-white/[0.04]">
           <MatchResultForm
             match={match}
@@ -160,61 +120,57 @@ function MatchAdminRow({
         </div>
       )}
 
-      {tournament.status === "finished" && match.completed && (
+      {tournament.status === 'finished' && match.completed && (
         <div className="px-3 sm:px-4 py-2 border-t border-white/[0.04] flex items-center gap-2">
           <CheckCircle2 className="w-3.5 h-3.5 text-green-400/60 shrink-0" />
           <span className="text-xs text-white/30 font-[Orbitron] tracking-wider">
-            {isDraw ? "Draw" : `${match.winner?.name} wins`}
+            {isDraw ? 'Draw' : `${match.winner?.name} wins`}
           </span>
         </div>
       )}
     </div>
-  );
+  )
 }
 
 // ─── Main page ────────────────────────────────────────────────────────────────
 export default function AdminTournamentManage() {
-  const { id } = useParams();
-  const { tournament, matches, standings, players, loading, refetch } =
-    useTournament(id);
+  const { id } = useParams()
+  const { tournament, matches, standings, players, loading, refetch } = useTournament(id)
 
   if (loading) {
     return (
       <div className="flex items-center justify-center py-20">
         <div className="w-6 h-6 border-2 border-neon-purple/30 border-t-neon-purple rounded-full animate-spin" />
       </div>
-    );
+    )
   }
 
   if (!tournament) {
     return (
       <div className="text-center py-20 text-white/30">
-        <p className="font-[Orbitron] uppercase tracking-widest">
-          Tournament not found
-        </p>
+        <p className="font-[Orbitron] uppercase tracking-widest">Tournament not found</p>
       </div>
-    );
+    )
   }
 
-  const statusConfig = getStatusConfig(tournament.status);
-  const typeConfig = getTypeConfig(tournament.type);
+  const statusConfig = getStatusConfig(tournament.status)
+  const typeConfig   = getTypeConfig(tournament.type)
 
-  const roundMap = {};
+  const roundMap = {}
   matches.forEach((m) => {
-    if (!roundMap[m.round_number]) roundMap[m.round_number] = [];
-    roundMap[m.round_number].push(m);
-  });
-  const roundNumbers = Object.keys(roundMap)
-    .map(Number)
-    .sort((a, b) => a - b);
+    if (!roundMap[m.round_number]) roundMap[m.round_number] = []
+    roundMap[m.round_number].push(m)
+  })
+  const roundNumbers = Object.keys(roundMap).map(Number).sort((a, b) => a - b)
 
   const firstIncompleteRound = roundNumbers.find((r) =>
-    roundMap[r].some((m) => !m.completed),
-  );
-  const totalKnockoutPlayers = (roundMap[1]?.length ?? 0) * 2 || 2;
+    roundMap[r].some((m) => !m.completed)
+  )
+  const totalKnockoutPlayers = (roundMap[1]?.length ?? 0) * 2 || 2
 
   return (
     <PageTransition>
+
       {/* Back */}
       <Link
         to="/admin"
@@ -229,48 +185,34 @@ export default function AdminTournamentManage() {
         <div className="flex flex-wrap items-center gap-2 mb-2">
           <Badge className={statusConfig.className}>{statusConfig.label}</Badge>
           <Badge className={typeConfig.className}>{typeConfig.label}</Badge>
-          <span className="text-white/30 text-xs">
-            {formatDate(tournament.created_at)}
-          </span>
+          <span className="text-white/30 text-xs">{formatDate(tournament.created_at)}</span>
         </div>
         <h1 className="text-lg sm:text-2xl font-[Orbitron] font-black text-white mb-1 leading-tight">
           {tournament.name}
         </h1>
-        {tournament.type === "league" && (
+        {tournament.type === 'league' && (
           <p className="text-white/40 text-sm">
-            Win:{" "}
-            <span className="text-neon-cyan">{tournament.win_points}pts</span>
-            {tournament.allow_draw && (
-              <>
-                {" "}
-                · Draw:{" "}
-                <span className="text-neon-cyan">
-                  {tournament.draw_points}pts
-                </span>
-              </>
-            )}
-            {" · "}Loss:{" "}
-            <span className="text-white/30">{tournament.loss_points}pts</span>
+            Win: <span className="text-neon-cyan">{tournament.win_points}pts</span>
+            {tournament.allow_draw && <> · Draw: <span className="text-neon-cyan">{tournament.draw_points}pts</span></>}
+            {' · '}Loss: <span className="text-white/30">{tournament.loss_points}pts</span>
           </p>
         )}
       </div>
 
       {/* Finished banner */}
-      {tournament.status === "finished" && (
+      {tournament.status === 'finished' && (
         <motion.div
           initial={{ opacity: 0, y: -8 }}
           animate={{ opacity: 1, y: 0 }}
           className="mb-5 px-4 py-3 rounded-xl bg-green-500/8 border border-green-500/20 flex items-center gap-3"
         >
           <CheckCircle2 className="w-5 h-5 text-green-400 shrink-0" />
-          <p className="text-sm text-green-300">
-            Tournament concluded — all results are final.
-          </p>
+          <p className="text-sm text-green-300">Tournament concluded — all results are final.</p>
         </motion.div>
       )}
 
       {/* ── LEAGUE ── */}
-      {tournament.type === "league" ? (
+      {tournament.type === 'league' ? (
         <div className="space-y-6">
           {/* On mobile: leaderboard on top, then rounds. On desktop: side by side */}
           <div className="lg:hidden">
@@ -284,35 +226,29 @@ export default function AdminTournamentManage() {
 
             <div className="lg:col-span-3 space-y-5">
               {roundNumbers.map((roundNum) => {
-                const roundMatches = roundMap[roundNum];
-                const roundName =
-                  roundMatches[0]?.round_name || `Round ${roundNum}`;
-                const done = roundMatches.filter((m) => m.completed).length;
-                const allDone = done === roundMatches.length;
+                const roundMatches = roundMap[roundNum]
+                const roundName = roundMatches[0]?.round_name || `Round ${roundNum}`
+                const done = roundMatches.filter((m) => m.completed).length
+                const allDone = done === roundMatches.length
 
                 return (
                   <Card key={roundNum}>
                     <CardHeader>
                       <CardTitle className="flex items-center gap-2 text-xs sm:text-sm">
-                        {allDone ? (
-                          <CheckCircle2 className="w-4 h-4 text-green-400 shrink-0" />
-                        ) : (
-                          <Clock className="w-4 h-4 text-neon-purple animate-pulse shrink-0" />
-                        )}
+                        {allDone
+                          ? <CheckCircle2 className="w-4 h-4 text-green-400 shrink-0" />
+                          : <Clock className="w-4 h-4 text-neon-purple animate-pulse shrink-0" />
+                        }
                         {roundName}
                       </CardTitle>
-                      <span className="text-xs text-white/30 tabular-nums shrink-0">
-                        {done}/{roundMatches.length}
-                      </span>
+                      <span className="text-xs text-white/30 tabular-nums shrink-0">{done}/{roundMatches.length}</span>
                     </CardHeader>
 
                     <div className="h-1 bg-white/5 rounded-full mb-4 overflow-hidden">
                       <motion.div
                         className="h-full bg-gradient-to-r from-neon-purple to-neon-cyan rounded-full"
                         initial={{ width: 0 }}
-                        animate={{
-                          width: `${(done / roundMatches.length) * 100}%`,
-                        }}
+                        animate={{ width: `${(done / roundMatches.length) * 100}%` }}
                         transition={{ duration: 0.5 }}
                       />
                     </div>
@@ -330,36 +266,35 @@ export default function AdminTournamentManage() {
                       ))}
                     </div>
                   </Card>
-                );
+                )
               })}
             </div>
           </div>
         </div>
+
       ) : (
         /* ── KNOCKOUT ── */
         <div className="space-y-5">
           <BracketView matches={matches} loading={loading} />
 
           {roundNumbers.map((roundNum) => {
-            const roundMatches = roundMap[roundNum];
-            const roundName =
-              roundMatches[0]?.round_name || `Round ${roundNum}`;
-            const done = roundMatches.filter((m) => m.completed).length;
-            const allDone = done === roundMatches.length;
-            const isActive = roundNum === firstIncompleteRound;
-            const isBlocked = !isActive && !allDone;
+            const roundMatches = roundMap[roundNum]
+            const roundName = roundMatches[0]?.round_name || `Round ${roundNum}`
+            const done = roundMatches.filter((m) => m.completed).length
+            const allDone = done === roundMatches.length
+            const isActive = roundNum === firstIncompleteRound
+            const isBlocked = !isActive && !allDone
 
             return (
               <Card key={roundNum}>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2 text-xs sm:text-sm">
-                    {allDone ? (
-                      <CheckCircle2 className="w-4 h-4 text-green-400 shrink-0" />
-                    ) : isActive ? (
-                      <Clock className="w-4 h-4 text-neon-purple animate-pulse shrink-0" />
-                    ) : (
-                      <Clock className="w-4 h-4 text-white/15 shrink-0" />
-                    )}
+                    {allDone
+                      ? <CheckCircle2 className="w-4 h-4 text-green-400 shrink-0" />
+                      : isActive
+                      ? <Clock className="w-4 h-4 text-neon-purple animate-pulse shrink-0" />
+                      : <Clock className="w-4 h-4 text-white/15 shrink-0" />
+                    }
                     {roundName}
                   </CardTitle>
                   <div className="flex items-center gap-2 shrink-0">
@@ -368,9 +303,7 @@ export default function AdminTournamentManage() {
                         Active
                       </Badge>
                     )}
-                    <span className="text-xs text-white/30 tabular-nums">
-                      {done}/{roundMatches.length}
-                    </span>
+                    <span className="text-xs text-white/30 tabular-nums">{done}/{roundMatches.length}</span>
                   </div>
                 </CardHeader>
 
@@ -378,9 +311,7 @@ export default function AdminTournamentManage() {
                   <motion.div
                     className="h-full bg-gradient-to-r from-neon-cyan to-neon-purple rounded-full"
                     initial={{ width: 0 }}
-                    animate={{
-                      width: `${(done / roundMatches.length) * 100}%`,
-                    }}
+                    animate={{ width: `${(done / roundMatches.length) * 100}%` }}
                     transition={{ duration: 0.5 }}
                   />
                 </div>
@@ -398,10 +329,10 @@ export default function AdminTournamentManage() {
                   ))}
                 </div>
               </Card>
-            );
+            )
           })}
         </div>
       )}
     </PageTransition>
-  );
+  )
 }
